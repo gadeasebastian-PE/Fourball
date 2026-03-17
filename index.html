@@ -18,13 +18,12 @@
         * { 
             box-sizing: border-box; 
             -webkit-tap-highlight-color: transparent; 
-            /* Deshabilita gestos de navegador como zoom y desplazamiento */
             touch-action: none; 
         }
 
         html, body {
             overflow: hidden;
-            position: fixed; /* Evita el rebote y desplazamiento en iOS */
+            position: fixed; 
             width: 100%;
             height: 100%;
             margin: 0;
@@ -34,7 +33,6 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--gris-fondo);
-            /* Padding vertical de 5px cada uno = 10px total */
             padding: 5px 10px;
             color: var(--texto);
             display: flex;
@@ -53,7 +51,6 @@
         .screen {
             display: none;
             flex-direction: column;
-            /* MODIFICACION: Restamos los 10px de padding del body para que no se corte arriba */
             height: calc(100% - 10px); 
             justify-content: flex-start;
         }
@@ -99,7 +96,6 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.8rem;
-            /* Permite interaccion normal con el teclado sin zoom */
             touch-action: manipulation; 
         }
 
@@ -128,7 +124,6 @@
         .header-status {
             background: var(--verde-golf);
             color: white;
-            /* MODIFICACION: Compactado padding vertical para ahorrar espacio */
             padding: 4px 6px; 
             border-radius: 8px;
             text-align: center;
@@ -169,14 +164,12 @@
             width: 18px; text-align: center; margin-right: 3px;
         }
 
-        /* Ventana Felicitacion */
         #result-screen { text-align: center; padding: 10px; }
         .winner-title { font-size: 1.6rem; color: var(--verde-golf); margin: 5px 0; font-weight: bold; }
         
         .final-score-box { 
             font-size: 1.2rem; 
             margin: 10px 0; 
-            /* MODIFICACION: Compactado padding vertical */
             padding: 6px 10px; 
             background: var(--verde-claro); 
             border-radius: 10px; 
@@ -194,35 +187,18 @@
         .stat-item { background: #fff; padding: 8px 4px; border-radius: 6px; border: 1px solid #ddd; }
         .stat-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--verde-golf); }
 
-        /* Estilos especificos para la captura de imagen */
-        #capture-area {
-            position: relative;
-        }
-        
-        #capture-area .img-header {
-            /* MODIFICACION: Achicada imagen en un 50 % mas y centrada */
-            width: auto !important;
-            height: auto !important;
-            max-width: 50% !important; /* Reducción de ancho */
-            max-height: 70px !important; /* Reducción de altura proporcional */
-            transform: scale(0.5) !important; /* Escala al 50% */
-            transform-origin: top center !important; /* Escala desde arriba al centro */
-            margin: 0 auto !important; /* Centrado estandar */
-            margin-bottom: -70px !important; /* Tira texto hacia arriba */
-        }
-
         footer {
             margin-top: auto;
-            /* MODIFICACION: Altura fija y centrado para garantizar posicion */
-            height: 30px;
+            height: 35px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center; /* Centrado horizontal estricto */
+            justify-content: center; 
             width: 100%;
             font-size: 0.55rem;
             color: #888;
             line-height: 1.2;
-            text-align: center; /* Asegurar centrado de texto */
+            text-align: center; 
         }
     </style>
 </head>
@@ -355,7 +331,7 @@
     let balanceMatch = 0; 
     let historialResultados = []; 
 
-    // Bloqueo de Zoom por JavaScript
+    // Bloqueo de Zoom y Doble Click
     document.addEventListener('touchstart', function (event) {
         if (event.touches.length > 1) {
             event.preventDefault();
@@ -496,7 +472,17 @@
 
     function descargarJPG() {
         const area = document.getElementById('capture-area');
-        html2canvas(area, { backgroundColor: '#F4F7F6' }).then(canvas => {
+        // Usamos onclone para achicar la imagen un 50% solo en el clon que se captura
+        html2canvas(area, { 
+            backgroundColor: '#F4F7F6',
+            onclone: (clonedDoc) => {
+                const clonedImg = clonedDoc.querySelector('#capture-area .img-header');
+                if(clonedImg) {
+                    clonedImg.style.width = "50%";
+                    clonedImg.style.margin = "0 auto 5px auto";
+                }
+            }
+        }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'Resultado_MiGolf.jpg';
             link.href = canvas.toDataURL('image/jpeg', 0.9);
