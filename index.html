@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Mi Golf Fourball - La Carolina</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -15,18 +15,29 @@
             --rojo: #d32f2f;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            /* Deshabilita gestos de navegador como zoom y desplazamiento */
+            touch-action: none; 
+        }
+
+        html, body {
+            overflow: hidden;
+            position: fixed; /* Evita el rebote y desplazamiento en iOS */
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--gris-fondo);
-            margin: 0;
-            padding: 5px 10px; /* Padding vertical de 5px cada uno = 10px total */
+            padding: 5px 10px;
             color: var(--texto);
-            height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
         .app-container {
@@ -41,7 +52,6 @@
         .screen {
             display: none;
             flex-direction: column;
-            /* MODIFICACION: Restamos los 10px de padding del body para que no se corte arriba */
             height: calc(100% - 10px); 
             justify-content: flex-start;
         }
@@ -87,6 +97,8 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.8rem;
+            /* Permite interaccion normal con el teclado sin zoom */
+            touch-action: manipulation; 
         }
 
         .row { display: flex; gap: 5px; margin-bottom: 3px; }
@@ -105,6 +117,7 @@
             text-transform: uppercase;
             margin-top: 2px;
             cursor: pointer;
+            touch-action: manipulation;
         }
         
         .btn-secondary { background: #666; }
@@ -113,7 +126,6 @@
         .header-status {
             background: var(--verde-golf);
             color: white;
-            /* MODIFICACION: Compactado padding vertical para ahorrar espacio */
             padding: 4px 6px; 
             border-radius: 8px;
             text-align: center;
@@ -132,6 +144,7 @@
             font-weight: bold; font-size: 1.1rem;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         .score-input-box {
@@ -159,7 +172,6 @@
         .final-score-box { 
             font-size: 1.2rem; 
             margin: 10px 0; 
-            /* MODIFICACION: Compactado padding vertical */
             padding: 6px 10px; 
             background: var(--verde-claro); 
             border-radius: 10px; 
@@ -179,7 +191,6 @@
 
         footer {
             margin-top: auto;
-            /* MODIFICACION: Altura fija y centrado para garantizar posicion */
             height: 30px;
             display: flex;
             align-items: center;
@@ -319,6 +330,22 @@
     let balanceMatch = 0; 
     let historialResultados = []; 
 
+    // Bloqueo de Zoom por JavaScript
+    document.addEventListener('touchstart', function (event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        let now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+
     window.onload = function() {
         document.getElementById('team1-name').value = localStorage.getItem('team1') || "Equipo 1";
         document.getElementById('team2-name').value = localStorage.getItem('team2') || "Equipo 2";
@@ -349,11 +376,10 @@
             document.getElementById(`label-p${i}`).innerText = jugadores[i-1].name;
             document.getElementById(`tag-p${i}`).innerText = `H${jugadores[i-1].hcp}`;
         }
-        // RESET COMPLETO DE VARIABLES Y UI
         hoyoActual = 1; 
         balanceMatch = 0; 
         historialResultados = [];
-        actualizarStatusMatch(); // Asegura que el status vuelva a empate
+        actualizarStatusMatch(); 
         actualizarHoyoInfo(); 
         cambiarPantalla('game-screen');
     }
