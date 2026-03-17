@@ -15,15 +15,16 @@
             --rojo: #d32f2f;
         }
 
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            touch-action: none; 
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            /* Deshabilita gestos de navegador como zoom y desplazamiento */
+            touch-action: none;
         }
 
         html, body {
             overflow: hidden;
-            position: fixed; 
+            position: fixed; /* Evita el rebote y desplazamiento en iOS */
             width: 100%;
             height: 100%;
             margin: 0;
@@ -33,6 +34,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--gris-fondo);
+            /* Padding vertical de 5px cada uno = 10px total */
             padding: 5px 10px;
             color: var(--texto);
             display: flex;
@@ -51,15 +53,16 @@
         .screen {
             display: none;
             flex-direction: column;
-            height: calc(100% - 10px); 
+            /* MODIFICACION: Restamos los 10px de padding del body para que no se corte arriba */
+            height: calc(100% - 10px);
             justify-content: flex-start;
         }
         .screen.active { display: flex; }
 
-        h1 { 
-            color: var(--verde-golf); 
-            text-align: center; 
-            margin: 0 0 5px 0; 
+        h1 {
+            color: var(--verde-golf);
+            text-align: center;
+            margin: 0 0 5px 0;
             font-size: 1.5rem;
             line-height: 1.1;
         }
@@ -69,12 +72,12 @@
             margin-bottom: 5px;
             display: flex;
             justify-content: center;
-            align-items: center; 
+            align-items: center;
         }
 
         .img-header {
-            width: 100%; 
-            max-width: 100%; 
+            width: 100%;
+            max-width: 100%;
             height: auto;
             max-height: 140px;
             object-fit: contain;
@@ -96,7 +99,8 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.8rem;
-            touch-action: manipulation; 
+            /* Permite interaccion normal con el teclado sin zoom */
+            touch-action: manipulation;
         }
 
         .row { display: flex; gap: 5px; margin-bottom: 3px; }
@@ -117,14 +121,15 @@
             cursor: pointer;
             touch-action: manipulation;
         }
-        
+
         .btn-secondary { background: #666; }
         .btn-danger { background: var(--rojo); margin-top: 5px; font-size: 0.75rem; padding: 8px; }
 
         .header-status {
             background: var(--verde-golf);
             color: white;
-            padding: 4px 6px; 
+            /* MODIFICACION: Compactado padding vertical para ahorrar espacio */
+            padding: 4px 6px;
             border-radius: 8px;
             text-align: center;
             margin-bottom: 6px;
@@ -164,19 +169,21 @@
             width: 18px; text-align: center; margin-right: 3px;
         }
 
+        /* Ventana Felicitacion */
         #result-screen { text-align: center; padding: 10px; }
         .winner-title { font-size: 1.6rem; color: var(--verde-golf); margin: 5px 0; font-weight: bold; }
-        
-        .final-score-box { 
-            font-size: 1.2rem; 
-            margin: 10px 0; 
-            padding: 6px 10px; 
-            background: var(--verde-claro); 
-            border-radius: 10px; 
-            color: var(--verde-golf); 
-            font-weight: bold; 
+
+        .final-score-box {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            /* MODIFICACION: Compactado padding vertical */
+            padding: 6px 10px;
+            background: var(--verde-claro);
+            border-radius: 10px;
+            color: var(--verde-golf);
+            font-weight: bold;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -189,23 +196,21 @@
 
         footer {
             margin-top: auto;
-            height: 35px;
+            /* MODIFICACION: Altura fija y centrado para garantizar posicion */
+            height: 30px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center; 
-            width: 100%;
+            justify-content: center;
             font-size: 0.55rem;
             color: #888;
             line-height: 1.2;
-            text-align: center; 
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    
+
     <div id="setup-screen" class="screen active">
         <h1>Mi Golf <span style="font-weight: 100;">Fourball</span></h1>
         <div class="img-container"><img src="Fourball.png" alt="Fourball" class="img-header"></div>
@@ -298,14 +303,14 @@
             <div class="img-container"><img src="Fourball.png" alt="Fourball" class="img-header"></div>
             <div class="winner-title" id="winner-name">EQUIPO GANADOR</div>
             <div class="final-score-box" id="final-result-text">MATCH EMPATADO</div>
-            
+
             <div class="stats-grid">
                 <div class="stat-item"><span id="stat-team1-label">E1</span><span class="stat-val" id="stat-e1-wins">0</span></div>
                 <div class="stat-item">Empates<span class="stat-val" id="stat-ties">0</span></div>
                 <div class="stat-item"><span id="stat-team2-label">E2</span><span class="stat-val" id="stat-e2-wins">0</span></div>
             </div>
         </div>
-        
+
         <button class="btn" onclick="descargarJPG()">Guardar JPG</button>
         <button class="btn btn-secondary" onclick="irAInicio()" style="margin-top:10px;">Ir a Ventana Principal</button>
     </div>
@@ -318,9 +323,9 @@
 
 <script>
     const canchaLaCarolina = [
-        {par: 4, hcp: 15}, {par: 4, hcp: 17}, {par: 3, hcp: 9}, {par: 5, hcp: 11}, 
+        {par: 4, hcp: 15}, {par: 4, hcp: 17}, {par: 3, hcp: 9}, {par: 5, hcp: 11},
         {par: 4, hcp: 3}, {par: 4, hcp: 13}, {par: 3, hcp: 1}, {par: 4, hcp: 5}, {par: 5, hcp: 7},
-        {par: 4, hcp: 2}, {par: 3, hcp: 8}, {par: 4, hcp: 16}, {par: 3, hcp: 14}, 
+        {par: 4, hcp: 2}, {par: 3, hcp: 8}, {par: 4, hcp: 16}, {par: 3, hcp: 14},
         {par: 4, hcp: 12}, {par: 4, hcp: 4}, {par: 4, hcp: 18}, {par: 4, hcp: 10}, {par: 5, hcp: 6}
     ];
 
@@ -328,10 +333,10 @@
     let equipo1Name = "";
     let equipo2Name = "";
     let hoyoActual = 1;
-    let balanceMatch = 0; 
-    let historialResultados = []; 
+    let balanceMatch = 0;
+    let historialResultados = [];
 
-    // Bloqueo de Zoom y Doble Click
+    // Bloqueo de Zoom y Doble Click por JavaScript
     document.addEventListener('touchstart', function (event) {
         if (event.touches.length > 1) {
             event.preventDefault();
@@ -377,11 +382,12 @@
             document.getElementById(`label-p${i}`).innerText = jugadores[i-1].name;
             document.getElementById(`tag-p${i}`).innerText = `H${jugadores[i-1].hcp}`;
         }
-        hoyoActual = 1; 
-        balanceMatch = 0; 
+        // RESET COMPLETO DE VARIABLES Y UI
+        hoyoActual = 1;
+        balanceMatch = 0;
         historialResultados = [];
-        actualizarStatusMatch(); 
-        actualizarHoyoInfo(); 
+        actualizarStatusMatch(); // Asegura que el status vuelva a empate
+        actualizarHoyoInfo();
         cambiarPantalla('game-screen');
     }
 
@@ -432,11 +438,11 @@
     }
 
     function hoyoAnterior() {
-        if (hoyoActual > 1) { 
-            hoyoActual--; 
-            historialResultados.splice(hoyoActual - 1, 1); 
-            balanceMatch = historialResultados.reduce((a, b) => a + b, 0); 
-            actualizarStatusMatch(); actualizarHoyoInfo(); 
+        if (hoyoActual > 1) {
+            hoyoActual--;
+            historialResultados.splice(hoyoActual - 1, 1);
+            balanceMatch = historialResultados.reduce((a, b) => a + b, 0);
+            actualizarStatusMatch(); actualizarHoyoInfo();
         }
     }
 
@@ -453,7 +459,7 @@
     function mostrarFelicitaciones() {
         const winnerLabel = document.getElementById('winner-name');
         const resultLabel = document.getElementById('final-result-text');
-        
+
         let winsE1 = historialResultados.filter(x => x === 1).length;
         let winsE2 = historialResultados.filter(x => x === -1).length;
         let ties = historialResultados.filter(x => x === 0).length;
@@ -472,19 +478,14 @@
 
     function descargarJPG() {
         const area = document.getElementById('capture-area');
-        // Usamos onclone para achicar la imagen un 50% solo en el clon que se captura
-        html2canvas(area, { 
+        // Usamos scale: 0.8 para achicar la captura completa en un 80%
+        html2canvas(area, {
             backgroundColor: '#F4F7F6',
-            onclone: (clonedDoc) => {
-                const clonedImg = clonedDoc.querySelector('#capture-area .img-header');
-                if(clonedImg) {
-                    clonedImg.style.width = "50%";
-                    clonedImg.style.margin = "0 auto 5px auto";
-                }
-            }
+            scale: 0.8
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'Resultado_MiGolf.jpg';
+            // Mantenemos calidad alta para que no se pixelee al achicar
             link.href = canvas.toDataURL('image/jpeg', 0.9);
             link.click();
         });
