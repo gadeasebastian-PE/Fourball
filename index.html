@@ -356,7 +356,7 @@
             </div>
             <div class="control-col flex-2">
                 <button class="btn" id="btn-next" onclick="siguienteHoyo()">Siguiente Hoyo</button>
-                <button class="btn btn-finish" id="btn-finish-early" onclick="mostrarFelicitaciones()">Finalizar Fourball</button>
+                <button class="btn btn-finish" id="btn-finish-early" onclick="finalizarConConfirmacion()">Finalizar Fourball</button>
             </div>
         </div>
     </div>
@@ -452,10 +452,16 @@
         actualizarStatusMatch();
     }
 
+    function finalizarConConfirmacion() {
+        const modoLabel = currentMode === 'fourball' ? 'fourball' : 'match';
+        if(confirm(`¿Deseas finalizar el ${modoLabel} y ver los resultados?`)) {
+            mostrarFelicitaciones();
+        }
+    }
+
     function iniciarJuego() {
         const idCancha = document.getElementById('course-select').value;
         canchaActualData = canchas[idCancha];
-
         if (currentMode === 'match') {
             equipo1Name = document.getElementById('p1-name').value || "J1";
             equipo2Name = document.getElementById('p3-name').value || "J3";
@@ -463,28 +469,24 @@
             equipo1Name = document.getElementById('team1-name').value || "Equipo 1";
             equipo2Name = document.getElementById('team2-name').value || "Equipo 2";
         }
-
         jugadores = [
             { name: document.getElementById('p1-name').value || "J1", hcp: parseInt(document.getElementById('p1-hcp').value) || 0 },
             { name: document.getElementById('p2-name').value || "J2", hcp: parseInt(document.getElementById('p2-hcp').value) || 0 },
             { name: document.getElementById('p3-name').value || "J3", hcp: parseInt(document.getElementById('p3-hcp').value) || 0 },
             { name: document.getElementById('p4-name').value || "J4", hcp: parseInt(document.getElementById('p4-hcp').value) || 0 }
         ];
-
         localStorage.setItem('team1', document.getElementById('team1-name').value);
         localStorage.setItem('team2', document.getElementById('team2-name').value);
         for(let i=1; i<=4; i++) {
             localStorage.setItem(`p${i}n`, jugadores[i-1].name);
             localStorage.setItem(`p${i}h`, jugadores[i-1].hcp);
         }
-
         document.getElementById('display-team1').innerText = equipo1Name;
         document.getElementById('display-team2').innerText = equipo2Name;
         for(let i=1; i<=4; i++) {
             document.getElementById(`label-p${i}`).innerText = jugadores[i-1].name;
             document.getElementById(`tag-p${i}`).innerText = `H${jugadores[i-1].hcp}`;
         }
-
         hoyoActual = 1; balanceMatch = 0; historialResultados = [];
         actualizarStatusMatch(); actualizarHoyoInfo();
         cambiarPantalla('game-screen');
@@ -529,12 +531,12 @@
         let m1, m2;
         if (currentMode === 'match') { m1 = n1; m2 = n3; }
         else { m1 = Math.min(n1, parseInt(document.getElementById('net-p2').innerText)); m2 = Math.min(n3, parseInt(document.getElementById('net-p4').innerText)); }
-
         let res = 0; if (m1 < m2) res = 1; else if (m2 < m1) res = -1;
         historialResultados[hoyoActual - 1] = res;
         balanceMatch = historialResultados.reduce((a, b) => a + b, 0);
         actualizarStatusMatch();
-        if(hoyoActual < 18) { hoyoActual++; actualizarHoyoInfo(); } else { mostrarFelicitaciones(); }
+        if(hoyoActual < 18) { hoyoActual++; actualizarHoyoInfo(); }
+        else { finalizarConConfirmacion(); }
     }
 
     function hoyoAnterior() {
@@ -570,7 +572,6 @@
         document.getElementById('stat-e1-wins').innerText = historialResultados.filter(x => x === 1).length;
         document.getElementById('stat-e2-wins').innerText = historialResultados.filter(x => x === -1).length;
         document.getElementById('stat-ties').innerText = historialResultados.filter(x => x === 0).length;
-
         if(balanceMatch === 0) { winnerLabel.innerText = `${suffix} EMPATADO`; resultLabel.innerText = "All Square"; }
         else if(balanceMatch > 0) { winnerLabel.innerText = equipo1Name; resultLabel.innerText = `${balanceMatch} UP`; }
         else { winnerLabel.innerText = equipo2Name; resultLabel.innerText = `${Math.abs(balanceMatch)} UP`; }
