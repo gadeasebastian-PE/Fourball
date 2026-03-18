@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
-    <title>Mi Golf Fourball - La Carolina</title>
+    <title>Mi Golf - Selector de Campos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -65,6 +65,22 @@
             line-height: 1.1;
         }
 
+        .course-selector-container {
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .course-select {
+            width: 100%;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 0.85rem;
+            background: var(--blanco);
+            color: var(--texto);
+            font-weight: 500;
+            touch-action: manipulation;
+        }
+
         .mode-selector {
             display: flex;
             gap: 10px;
@@ -100,7 +116,7 @@
             width: 100%;
             max-width: 100%;
             height: auto;
-            max-height: 140px;
+            max-height: 120px;
             object-fit: contain;
             display: block;
             margin: 0 auto;
@@ -229,7 +245,6 @@
         }
 
         .hidden { display: none !important; }
-
         .game-controls { display: flex; gap: 5px; }
         .control-col { display: flex; flex-direction: column; gap: 2px; }
     </style>
@@ -240,6 +255,14 @@
 
     <div id="setup-screen" class="screen active">
         <h1 class="main-title">Mi Golf Fourball</h1>
+
+        <div class="course-selector-container">
+            <select id="course-select" class="course-select">
+                <option value="la_carolina">La Carolina Golf & Country Club</option>
+                <option value="miramar">Miramar Links</option>
+                <option value="marayui">Marayui Country Golf - Chapadmalal</option>
+            </select>
+        </div>
 
         <div class="mode-selector">
             <button class="mode-btn active" id="btn-fourball" onclick="setMode('fourball')">Fourball</button>
@@ -280,7 +303,7 @@
     <div id="game-screen" class="screen">
         <h1 class="main-title">Mi Golf Fourball</h1>
         <div class="header-status">
-            <div class="hole-info" id="hole-desc">HOYO 1 - PAR 4 (HCP 15)</div>
+            <div class="hole-info" id="hole-desc">HOYO 1</div>
             <div class="match-score" id="status-display">FOURBALL EMPATADO</div>
         </div>
 
@@ -365,12 +388,26 @@
 </div>
 
 <script>
-    const canchaLaCarolina = [
-        {par: 4, hcp: 15}, {par: 4, hcp: 17}, {par: 3, hcp: 9}, {par: 5, hcp: 11},
-        {par: 4, hcp: 3}, {par: 4, hcp: 13}, {par: 3, hcp: 1}, {par: 4, hcp: 5}, {par: 5, hcp: 7},
-        {par: 4, hcp: 2}, {par: 3, hcp: 8}, {par: 4, hcp: 16}, {par: 3, hcp: 14},
-        {par: 4, hcp: 12}, {par: 4, hcp: 4}, {par: 4, hcp: 18}, {par: 4, hcp: 10}, {par: 5, hcp: 6}
-    ];
+    const canchas = {
+        la_carolina: [
+            {par: 4, hcp: 15}, {par: 4, hcp: 17}, {par: 3, hcp: 9}, {par: 5, hcp: 11},
+            {par: 4, hcp: 3}, {par: 4, hcp: 13}, {par: 3, hcp: 1}, {par: 4, hcp: 5}, {par: 5, hcp: 7},
+            {par: 4, hcp: 2}, {par: 3, hcp: 8}, {par: 4, hcp: 16}, {par: 3, hcp: 14},
+            {par: 4, hcp: 12}, {par: 4, hcp: 4}, {par: 4, hcp: 18}, {par: 4, hcp: 10}, {par: 5, hcp: 6}
+        ],
+        miramar: [
+            {par: 4, hcp: 11}, {par: 4, hcp: 1}, {par: 4, hcp: 7}, {par: 3, hcp: 15},
+            {par: 5, hcp: 5}, {par: 4, hcp: 17}, {par: 4, hcp: 3}, {par: 3, hcp: 13}, {par: 5, hcp: 9},
+            {par: 4, hcp: 12}, {par: 4, hcp: 2}, {par: 4, hcp: 8}, {par: 3, hcp: 16},
+            {par: 5, hcp: 6}, {par: 4, hcp: 18}, {par: 4, hcp: 4}, {par: 3, hcp: 14}, {par: 5, hcp: 10}
+        ],
+        marayui: [
+            {par: 4, hcp: 11}, {par: 5, hcp: 3}, {par: 4, hcp: 7}, {par: 3, hcp: 17},
+            {par: 4, hcp: 1}, {par: 4, hcp: 13}, {par: 5, hcp: 5}, {par: 3, hcp: 15}, {par: 4, hcp: 9},
+            {par: 4, hcp: 12}, {par: 5, hcp: 4}, {par: 4, hcp: 8}, {par: 3, hcp: 18},
+            {par: 4, hcp: 2}, {par: 4, hcp: 14}, {par: 5, hcp: 6}, {par: 3, hcp: 16}, {par: 4, hcp: 10}
+        ]
+    };
 
     let jugadores = [];
     let equipo1Name = "";
@@ -379,6 +416,7 @@
     let balanceMatch = 0;
     let historialResultados = [];
     let currentMode = 'fourball';
+    let canchaActualData = [];
 
     document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
     let lastTouchEnd = 0;
@@ -402,25 +440,22 @@
         currentMode = mode;
         localStorage.setItem('mode', mode);
         const suffix = mode === 'fourball' ? 'Fourball' : 'Match';
-
         document.querySelectorAll('.main-title').forEach(el => el.innerText = `Mi Golf ${suffix}`);
         document.getElementById('start-main-btn').innerText = `Comenzar ${suffix}`;
         document.getElementById('btn-discard').innerText = mode === 'fourball' ? 'desc. fourball' : 'Desc. Match';
         document.getElementById('btn-finish-early').innerText = `Finalizar ${suffix}`;
-
-        // Cambio de imagen en el Inicio
         document.getElementById('main-header-img').src = mode === 'fourball' ? "Fourball.png" : "Twoballs.png";
-
         document.getElementById('btn-fourball').classList.toggle('active', mode === 'fourball');
         document.getElementById('btn-match').classList.toggle('active', mode === 'match');
-
         document.querySelectorAll('.team-input, .p2-row, .p4-row').forEach(el => el.classList.toggle('hidden', mode === 'match'));
         document.querySelectorAll('.team-header, .p2-game-row, .p4-game-row').forEach(el => el.classList.toggle('hidden', mode === 'match'));
-
         actualizarStatusMatch();
     }
 
     function iniciarJuego() {
+        const idCancha = document.getElementById('course-select').value;
+        canchaActualData = canchas[idCancha];
+
         if (currentMode === 'match') {
             equipo1Name = document.getElementById('p1-name').value || "J1";
             equipo2Name = document.getElementById('p3-name').value || "J3";
@@ -461,7 +496,7 @@
     }
 
     function actualizarHoyoInfo() {
-        const datos = canchaLaCarolina[hoyoActual - 1];
+        const datos = canchaActualData[hoyoActual - 1];
         document.getElementById('hole-desc').innerText = `HOYO ${hoyoActual} - PAR ${datos.par} (HCP ${datos.hcp})`;
         const btnNext = document.getElementById('btn-next');
         const suffix = currentMode === 'fourball' ? 'Fourball' : 'Match';
@@ -478,7 +513,7 @@
     }
 
     function calcularNetos() {
-        const hcpHoyo = canchaLaCarolina[hoyoActual - 1].hcp;
+        const hcpHoyo = canchaActualData[hoyoActual - 1].hcp;
         for(let i=0; i<4; i++) {
             const scoreGross = parseInt(document.getElementById(`score-p${i+1}`).innerText);
             let h = jugadores[i].hcp;
@@ -529,10 +564,7 @@
         const winnerLabel = document.getElementById('winner-name');
         const resultLabel = document.getElementById('final-result-text');
         const suffix = currentMode === 'fourball' ? 'FOURBALL' : 'MATCH';
-
-        // Cambio de imagen en Felicitaciones
         document.getElementById('result-header-img').src = currentMode === 'fourball' ? "Fourball1.png" : "Twoballs.png";
-
         document.getElementById('stat-team1-label').innerText = equipo1Name;
         document.getElementById('stat-team2-label').innerText = equipo2Name;
         document.getElementById('stat-e1-wins').innerText = historialResultados.filter(x => x === 1).length;
