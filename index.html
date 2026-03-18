@@ -64,8 +64,10 @@
         .hole-info { font-size: 0.7rem; opacity: 0.9; }
         .match-score { font-size: 1.1rem; font-weight: bold; margin: 1px 0; }
 
-        .stepper { display: flex; align-items: center; gap: 5px; }
+        .stepper { display: flex; align-items: center; gap: 4px; }
         .step-btn { background: #eee; border: 1px solid #ccc; border-radius: 4px; width: 28px; height: 28px; font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+        .x-btn { background: #fff; border: 1px solid var(--rojo); color: var(--rojo); border-radius: 4px; width: 28px; height: 28px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+
         .score-input-box { width: 35px; text-align: center; font-weight: bold; border: 1px solid #ccc; font-size: 0.9rem; background: white; padding: 3px 0; border-radius: 4px; }
 
         .player-row { display: flex; align-items: center; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #f0f0f0; }
@@ -73,16 +75,12 @@
         .player-hcp-tag { font-size: 0.55rem; background: var(--verde-claro); color: var(--verde-golf); padding: 1px 2px; border-radius: 2px; margin-left: 2px; }
         .net-score { font-size: 0.75rem; color: var(--verde-golf); font-weight: bold; width: 18px; text-align: center; margin-right: 3px; }
 
-        /* Estilos Tabla Resultados con Sombreado Intercalado */
+        /* Scorecard Table */
         .scorecard-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.55rem; background: white; border-radius: 4px; overflow: hidden; }
         .scorecard-table th { background: var(--verde-golf); color: white; padding: 3px 1px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
         .scorecard-table td { border: 1px solid #eee; padding: 2px 1px; text-align: center; }
-
-        /* MODIFICACION: Sombreado de columnas pares (Columna 2, 4, 6...) */
         .scorecard-table td:nth-child(even) { background-color: #f5f5f5; }
-
         .row-total { font-weight: bold; background: #f0f0f0 !important; }
-        .col-par { font-weight: bold; }
 
         .congrats-header-layout { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 5px; width: 100%; }
         .congrats-text-block { display: flex; flex-direction: column; justify-content: center; text-align: left; }
@@ -139,11 +137,11 @@
         </div>
         <div class="card">
             <h3 id="display-team1" class="team-header" style="margin:0 0 2px 0; font-size: 0.8rem; color:var(--verde-golf)">Equipo 1</h3>
-            <div class="player-row"><div><span class="player-name" id="label-p1">P1</span><span class="player-hcp-tag" id="tag-p1">H0</span></div><div class="stepper"><span class="net-score" id="net-p1">-</span><button class="step-btn" onclick="modificarScore(1, -1)">-</button><div class="score-input-box" id="score-p1">0</div><button class="step-btn" onclick="modificarScore(1, 1)">+</button></div></div>
-            <div class="player-row p2-game-row"><div><span class="player-name" id="label-p2">P2</span><span class="player-hcp-tag" id="tag-p2">H0</span></div><div class="stepper"><span class="net-score" id="net-p2">-</span><button class="step-btn" onclick="modificarScore(2, -1)">-</button><div class="score-input-box" id="score-p2">0</div><button class="step-btn" onclick="modificarScore(2, 1)">+</button></div></div>
+            <div class="player-row" id="row-p1"><div><span class="player-name" id="label-p1">P1</span><span class="player-hcp-tag" id="tag-p1">H0</span></div><div class="stepper"><span class="net-score" id="net-p1">-</span><button class="step-btn" onclick="modificarScore(1, -1)">-</button><div class="score-input-box" id="score-p1">0</div><button class="step-btn" onclick="modificarScore(1, 1)">+</button><button class="x-btn" onclick="marcarX(1)">X</button></div></div>
+            <div class="player-row p2-game-row" id="row-p2"><div><span class="player-name" id="label-p2">P2</span><span class="player-hcp-tag" id="tag-p2">H0</span></div><div class="stepper"><span class="net-score" id="net-p2">-</span><button class="step-btn" onclick="modificarScore(2, -1)">-</button><div class="score-input-box" id="score-p2">0</div><button class="step-btn" onclick="modificarScore(2, 1)">+</button><button class="x-btn" onclick="marcarX(2)">X</button></div></div>
             <h3 id="display-team2" class="team-header" style="margin:5px 0 2px 0; font-size: 0.8rem; color:var(--verde-golf)">Equipo 2</h3>
-            <div class="player-row"><div><span class="player-name" id="label-p3">P3</span><span class="player-hcp-tag" id="tag-p3">H0</span></div><div class="stepper"><span class="net-score" id="net-p3">-</span><button class="step-btn" onclick="modificarScore(3, -1)">-</button><div class="score-input-box" id="score-p3">0</div><button class="step-btn" onclick="modificarScore(3, 1)">+</button></div></div>
-            <div class="player-row p4-game-row" style="border:none"><div><span class="player-name" id="label-p4">P4</span><span class="player-hcp-tag" id="tag-p4">H0</span></div><div class="stepper"><span class="net-score" id="net-p4">-</span><button class="step-btn" onclick="modificarScore(4, -1)">-</button><div class="score-input-box" id="score-p4">0</div><button class="step-btn" onclick="modificarScore(4, 1)">+</button></div></div>
+            <div class="player-row" id="row-p3"><div><span class="player-name" id="label-p3">P3</span><span class="player-hcp-tag" id="tag-p3">H0</span></div><div class="stepper"><span class="net-score" id="net-p3">-</span><button class="step-btn" onclick="modificarScore(3, -1)">-</button><div class="score-input-box" id="score-p3">0</div><button class="step-btn" onclick="modificarScore(3, 1)">+</button><button class="x-btn" onclick="marcarX(3)">X</button></div></div>
+            <div class="player-row p4-game-row" id="row-p4" style="border:none"><div><span class="player-name" id="label-p4">P4</span><span class="player-hcp-tag" id="tag-p4">H0</span></div><div class="stepper"><span class="net-score" id="net-p4">-</span><button class="step-btn" onclick="modificarScore(4, -1)">-</button><div class="score-input-box" id="score-p4">0</div><button class="step-btn" onclick="modificarScore(4, 1)">+</button><button class="x-btn" onclick="marcarX(4)">X</button></div></div>
         </div>
         <div class="game-controls">
             <div class="control-col flex-1"><button class="btn btn-secondary" onclick="hoyoAnterior()">Anterior</button><button class="btn btn-danger" id="btn-discard" onclick="descartarMatch()">desc. fourball</button></div>
@@ -154,7 +152,7 @@
     <div id="result-screen" class="screen">
         <div id="capture-area" style="padding:10px; background:var(--gris-fondo);">
             <div class="congrats-header-layout">
-                <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
                     <img id="result-header-img" src="Fourball1.png" alt="Result" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 </div>
                 <div class="congrats-text-block">
@@ -228,9 +226,6 @@
         for(let i=1; i<=4; i++) { jugadores.push({ name: document.getElementById(`p${i}-name`).value || `J${i}`, hcp: parseInt(document.getElementById(`p${i}-hcp`).value) || 0 }); }
         if (currentMode === 'match') { equipo1Name = jugadores[0].name; equipo2Name = jugadores[2].name; }
         else { equipo1Name = document.getElementById('team1-name').value || "Equipo 1"; equipo2Name = document.getElementById('team2-name').value || "Equipo 2"; }
-        localStorage.setItem('team1', document.getElementById('team1-name').value);
-        localStorage.setItem('team2', document.getElementById('team2-name').value);
-        for(let i=1; i<=4; i++) { localStorage.setItem(`p${i}n`, jugadores[i-1].name); localStorage.setItem(`p${i}h`, jugadores[i-1].hcp); }
         hoyoActual = 1; balanceMatch = 0; historialResultados = []; historialScores = [];
         document.getElementById('display-team1').innerText = equipo1Name; document.getElementById('display-team2').innerText = equipo2Name;
         for(let i=1; i<=4; i++) { document.getElementById(`label-p${i}`).innerText = jugadores[i-1].name; document.getElementById(`tag-p${i}`).innerText = `H${jugadores[i-1].hcp}`; }
@@ -242,33 +237,78 @@
         document.getElementById('hole-desc').innerText = `HOYO ${hoyoActual} - PAR ${d.par} (HCP ${d.hcp})`;
         const btnNext = document.getElementById('btn-next');
         btnNext.innerText = (hoyoActual === 18) ? `Finalizar ${currentMode === 'fourball' ? 'Fourball' : 'Match'}` : "Siguiente Hoyo";
-        for(let i=1; i<=4; i++) document.getElementById(`score-p${i}`).innerText = d.par;
+        for(let i=1; i<=4; i++) {
+            document.getElementById(`score-p${i}`).innerText = d.par;
+            document.getElementById(`score-p${i}`).dataset.x = "false";
+        }
         calcularNetos();
     }
 
-    function modificarScore(p, v) { let e = document.getElementById(`score-p${p}`); e.innerText = Math.max(1, parseInt(e.innerText) + v); calcularNetos(); }
+    function marcarX(p) {
+        const el = document.getElementById(`score-p${p}`);
+        el.innerText = "X";
+        el.dataset.x = "true";
+        calcularNetos();
+    }
+
+    function modificarScore(p, v) {
+        let e = document.getElementById(`score-p${p}`);
+        if(e.dataset.x === "true") {
+            e.innerText = canchaActualData[hoyoActual-1].par;
+            e.dataset.x = "false";
+        } else {
+            e.innerText = Math.max(1, parseInt(e.innerText) + v);
+        }
+        calcularNetos();
+    }
 
     function calcularNetos() {
         const hH = canchaActualData[hoyoActual - 1].hcp;
         for(let i=0; i<4; i++) {
-            let g = parseInt(document.getElementById(`score-p${i+1}`).innerText);
-            let r = (jugadores[i].hcp >= hH) ? 1 : 0;
-            if (jugadores[i].hcp >= (hH + 18)) r = 2;
-            document.getElementById(`net-p${i+1}`).innerText = g - r;
+            let e = document.getElementById(`score-p${i+1}`);
+            let netDisplay = document.getElementById(`net-p${i+1}`);
+            if(e.dataset.x === "true") {
+                netDisplay.innerText = "X";
+            } else {
+                let g = parseInt(e.innerText);
+                let r = (jugadores[i].hcp >= hH) ? 1 : 0;
+                if (jugadores[i].hcp >= (hH + 18)) r = 2;
+                netDisplay.innerText = g - r;
+            }
         }
     }
 
     function siguienteHoyo() {
         const scoresHoyo = { par: canchaActualData[hoyoActual-1].par, p: [] };
-        for(let i=1; i<=4; i++) scoresHoyo.p.push({ g: parseInt(document.getElementById(`score-p${i}`).innerText), n: parseInt(document.getElementById(`net-p${i}`).innerText) });
+        for(let i=1; i<=4; i++) {
+            let e = document.getElementById(`score-p${i}`);
+            let n = document.getElementById(`net-p${i}`).innerText;
+            scoresHoyo.p.push({ g: e.innerText, n: n });
+        }
+
         let m1, m2;
-        if (currentMode === 'match') { m1 = scoresHoyo.p[0].n; m2 = scoresHoyo.p[2].n; }
-        else { m1 = Math.min(scoresHoyo.p[0].n, scoresHoyo.p[1].n); m2 = Math.min(scoresHoyo.p[2].n, scoresHoyo.p[3].n); }
-        let res = 0; if (m1 < m2) res = 1; else if (m2 < m1) res = -1;
+        const VAL_X = 999;
+
+        if (currentMode === 'match') {
+            m1 = scoresHoyo.p[0].n === "X" ? VAL_X : parseInt(scoresHoyo.p[0].n);
+            m2 = scoresHoyo.p[2].n === "X" ? VAL_X : parseInt(scoresHoyo.p[2].n);
+        } else {
+            let n1 = scoresHoyo.p[0].n === "X" ? VAL_X : parseInt(scoresHoyo.p[0].n);
+            let n2 = scoresHoyo.p[1].n === "X" ? VAL_X : parseInt(scoresHoyo.p[1].n);
+            let n3 = scoresHoyo.p[2].n === "X" ? VAL_X : parseInt(scoresHoyo.p[2].n);
+            let n4 = scoresHoyo.p[3].n === "X" ? VAL_X : parseInt(scoresHoyo.p[3].n);
+            m1 = Math.min(n1, n2);
+            m2 = Math.min(n3, n4);
+        }
+
+        let res = 0;
+        if (m1 < m2) res = 1; else if (m2 < m1) res = -1;
+
         historialResultados[hoyoActual - 1] = res;
         historialScores[hoyoActual - 1] = scoresHoyo;
         balanceMatch = historialResultados.reduce((a, b) => a + b, 0);
         actualizarStatusMatch();
+
         if(hoyoActual < 18) { hoyoActual++; actualizarHoyoInfo(); } else { finalizarConConfirmacion(); }
     }
 
@@ -303,19 +343,25 @@
 
     function generarTabla() {
         const cont = document.getElementById('table-container');
-        let headerRow1 = `<tr><th rowspan="2">H</th><th rowspan="2" class="col-par">P</th>`;
+        let headerRow1 = `<tr><th rowspan="2">H</th><th rowspan="2">P</th>`;
         let headerRow2 = `<tr>`;
         let targetIndices = (currentMode === 'fourball') ? [0, 1, 2, 3] : [0, 2];
         targetIndices.forEach(idx => { headerRow1 += `<th colspan="2">${jugadores[idx].name}</th>`; headerRow2 += `<th>G</th><th>N</th>`; });
         headerRow1 += `</tr>`; headerRow2 += `</tr>`;
         let h = `<table class="scorecard-table"><thead>${headerRow1}${headerRow2}</thead><tbody>`;
         let sums = { par:0, p: [ {g:0,n:0}, {g:0,n:0}, {g:0,n:0}, {g:0,n:0} ] };
+
         historialScores.forEach((hs, idx) => {
-            h += `<tr><td>${idx+1}</td><td class="col-par">${hs.par}</td>`;
+            h += `<tr><td>${idx+1}</td><td>${hs.par}</td>`;
             sums.par += hs.par;
-            targetIndices.forEach(idxP => { h += `<td>${hs.p[idxP].g}</td><td>${hs.p[idxP].n}</td>`; sums.p[idxP].g += hs.p[idxP].g; sums.p[idxP].n += hs.p[idxP].n; });
+            targetIndices.forEach(idxP => {
+                h += `<td>${hs.p[idxP].g}</td><td>${hs.p[idxP].n}</td>`;
+                if(hs.p[idxP].g !== "X") sums.p[idxP].g += parseInt(hs.p[idxP].g);
+                if(hs.p[idxP].n !== "X") sums.p[idxP].n += parseInt(hs.p[idxP].n);
+            });
             h += `</tr>`;
         });
+
         h += `<tr class="row-total"><td>T</td><td>${sums.par}</td>`;
         targetIndices.forEach(idxP => { h += `<td>${sums.p[idxP].g}</td><td>${sums.p[idxP].n}</td>`; });
         h += `</tr></tbody></table>`;
