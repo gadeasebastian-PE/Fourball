@@ -236,7 +236,7 @@
         canchaActualData = canchas[document.getElementById('course-select').value];
         jugadores = [];
         for(let i=1; i<=4; i++) { jugadores.push({ name: document.getElementById(`p${i}-name`).value || `J${i}`, hcp: parseInt(document.getElementById(`p${i}-hcp`).value) || 0 }); }
-        if (currentMode === 'match') { equipo1Name = jugadores[0].name; equipo2Name = jugadores[2].name; }
+        if (currentMode === 'match') { equipo1Name = jugadores[0].name; equipo2Name = jugadores[2].name; } 
         else { equipo1Name = document.getElementById('team1-name').value || "Equipo 1"; equipo2Name = document.getElementById('team2-name').value || "Equipo 2"; }
         localStorage.setItem('team1', document.getElementById('team1-name').value);
         localStorage.setItem('team2', document.getElementById('team2-name').value);
@@ -245,8 +245,8 @@
         document.getElementById('display-team1').innerText = equipo1Name; document.getElementById('display-team2').innerText = equipo2Name;
         for(let i=1; i<=4; i++) { document.getElementById(`label-p${i}`).innerText = jugadores[i-1].name; document.getElementById(`tag-p${i}`).innerText = `H${jugadores[i-1].hcp}`; }
         actualizarStatusMatch();
-        actualizarHoyoInfo();
-        document.getElementById('setup-screen').classList.remove('active');
+        actualizarHoyoInfo(); 
+        document.getElementById('setup-screen').classList.remove('active'); 
         document.getElementById('game-screen').classList.add('active');
     }
 
@@ -264,7 +264,7 @@
 
     function modificarScore(p, v) {
         let e = document.getElementById(`score-p${p}`);
-        if(e.dataset.x === "true") { e.innerText = canchaActualData[hoyoActual-1].par; e.dataset.x = "false"; }
+        if(e.dataset.x === "true") { e.innerText = canchaActualData[hoyoActual-1].par; e.dataset.x = "false"; } 
         else { e.innerText = Math.max(1, parseInt(e.innerText) + v); }
         calcularNetos();
     }
@@ -273,7 +273,7 @@
         const hH = canchaActualData[hoyoActual - 1].hcp;
         for(let i=0; i<4; i++) {
             let e = document.getElementById(`score-p${i+1}`), netDisplay = document.getElementById(`net-p${i+1}`);
-            if(e.dataset.x === "true") { netDisplay.innerText = "X"; }
+            if(e.dataset.x === "true") { netDisplay.innerText = "X"; } 
             else {
                 let g = parseInt(e.innerText), r = (jugadores[i].hcp >= hH) ? 1 : 0;
                 if (jugadores[i].hcp >= (hH + 18)) r = 2;
@@ -286,7 +286,7 @@
         const scoresHoyo = { par: canchaActualData[hoyoActual-1].par, p: [] };
         for(let i=1; i<=4; i++) scoresHoyo.p.push({ g: document.getElementById(`score-p${i}`).innerText, n: document.getElementById(`net-p${i}`).innerText });
         let m1, m2; const VAL_X = 999;
-        if (currentMode === 'match') { m1 = scoresHoyo.p[0].n === "X" ? VAL_X : parseInt(scoresHoyo.p[0].n); m2 = scoresHoyo.p[2].n === "X" ? VAL_X : parseInt(scoresHoyo.p[2].n); }
+        if (currentMode === 'match') { m1 = scoresHoyo.p[0].n === "X" ? VAL_X : parseInt(scoresHoyo.p[0].n); m2 = scoresHoyo.p[2].n === "X" ? VAL_X : parseInt(scoresHoyo.p[2].n); } 
         else {
             let n1 = scoresHoyo.p[0].n === "X" ? VAL_X : parseInt(scoresHoyo.p[0].n), n2 = scoresHoyo.p[1].n === "X" ? VAL_X : parseInt(scoresHoyo.p[1].n),
                 n3 = scoresHoyo.p[2].n === "X" ? VAL_X : parseInt(scoresHoyo.p[2].n), n4 = scoresHoyo.p[3].n === "X" ? VAL_X : parseInt(scoresHoyo.p[3].n);
@@ -349,15 +349,33 @@
     }
 
     function descargarJPG() {
-        html2canvas(document.getElementById('capture-area'), {
-            backgroundColor: '#F4F7F6',
-            scale: 3,
-            onclone: (d) => {
+        const area = document.getElementById('capture-area');
+        html2canvas(area, { 
+            backgroundColor: '#F4F7F6', 
+            scale: 2, 
+            logging: false,
+            useCORS: true,
+            onclone: (d) => { 
                 const header = d.querySelector('.congrats-header-layout');
-                if(header) { const imgContainer = header.querySelector('div:first-child'); if(imgContainer) { imgContainer.style.width = "40%"; imgContainer.style.height = "auto"; } }
+                if(header) { 
+                    const imgContainer = header.querySelector('div:first-child'); 
+                    if(imgContainer) { 
+                        imgContainer.style.width = "40%"; 
+                        imgContainer.style.height = "auto"; 
+                    } 
+                } 
             }
-        }).then(c => {
-            const l = document.createElement('a'); l.download = 'Resultado_MiGolf.jpg'; l.href = c.toDataURL('image/jpeg', 1.0); l.click();
+        }).then(canvas => {
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+            const link = document.createElement('a');
+            link.download = 'Resultado_MiGolf.jpg';
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }).catch(err => {
+            console.error("Error al exportar imagen:", err);
+            alert("Hubo un problema al generar la imagen. Inténtalo de nuevo.");
         });
     }
 </script>
