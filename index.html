@@ -139,19 +139,16 @@
         <div class="header-status">
             <div class="match-score" id="status-display">FOURBALL EMPATADO</div>
         </div>
-
         <div class="card">
             <h3 id="display-team1" class="team-header">Equipo 1</h3>
             <div class="player-row" id="row-p1"><div><span class="player-name" id="label-p1">P1</span><span class="player-hcp-tag" id="tag-p1">H0</span></div><div class="stepper"><span class="net-score" id="net-p1">-</span><button class="step-btn" onclick="modificarScore(1, -1)">-</button><div class="score-input-box" id="score-p1">0</div><button class="step-btn" onclick="modificarScore(1, 1)">+</button><button class="x-btn" onclick="marcarX(1)">X</button></div></div>
             <div class="player-row p2-game-row" id="row-p2"><div><span class="player-name" id="label-p2">P2</span><span class="player-hcp-tag" id="tag-p2">H0</span></div><div class="stepper"><span class="net-score" id="net-p2">-</span><button class="step-btn" onclick="modificarScore(2, -1)">-</button><div class="score-input-box" id="score-p2">0</div><button class="step-btn" onclick="modificarScore(2, 1)">+</button><button class="x-btn" onclick="marcarX(2)">X</button></div></div>
         </div>
-
         <div class="card">
             <h3 id="display-team2" class="team-header">Equipo 2</h3>
             <div class="player-row" id="row-p3"><div><span class="player-name" id="label-p3">P3</span><span class="player-hcp-tag" id="tag-p3">H0</span></div><div class="stepper"><span class="net-score" id="net-p3">-</span><button class="step-btn" onclick="modificarScore(3, -1)">-</button><div class="score-input-box" id="score-p3">0</div><button class="step-btn" onclick="modificarScore(3, 1)">+</button><button class="x-btn" onclick="marcarX(3)">X</button></div></div>
             <div class="player-row p4-game-row" id="row-p4" style="border:none"><div><span class="player-name" id="label-p4">P4</span><span class="player-hcp-tag" id="tag-p4">H0</span></div><div class="stepper"><span class="net-score" id="net-p4">-</span><button class="step-btn" onclick="modificarScore(4, -1)">-</button><div class="score-input-box" id="score-p4">0</div><button class="step-btn" onclick="modificarScore(4, 1)">+</button><button class="x-btn" onclick="marcarX(4)">X</button></div></div>
         </div>
-
         <div class="game-controls">
             <div class="control-col flex-1"><button class="btn btn-secondary" onclick="hoyoAnterior()">Anterior</button><button class="btn btn-danger" id="btn-discard" onclick="descartarMatch()">desc. fourball</button></div>
             <div class="control-col flex-2"><button class="btn" id="btn-next" onclick="siguienteHoyo()">Siguiente Hoyo</button><button class="btn btn-finish" id="btn-finish-early" onclick="finalizarConConfirmacion()">Finalizar Fourball</button></div>
@@ -259,7 +256,7 @@
         let info = `PAR ${d.par} - HCP ${d.hcp}`;
         if(d.a) info += ` | A: ${d.a} - B: ${d.b} YDS`;
         document.getElementById('hole-data').innerText = info;
-        for(let i=1; i<=4; i++) { document.getElementById(`score-p${i}`).innerText = d.par; document.getElementById(`score-p${i}`).dataset.x = "false"; }
+        for(let i=1; i<=4; i++) { let e = document.getElementById(`score-p${i}`); e.innerText = d.par; e.dataset.x = "false"; }
         calcularNetos();
     }
 
@@ -352,11 +349,15 @@
     }
 
     function descargarJPG() {
-        html2canvas(document.getElementById('capture-area'), { backgroundColor: '#F4F7F6', scale: 0.8, onclone: (d) => {
-            const header = d.querySelector('.congrats-header-layout');
-            if(header) { const imgContainer = header.querySelector('div:first-child'); if(imgContainer) { imgContainer.style.width = "40%"; imgContainer.style.height = "auto"; } }
-        }}).then(c => {
-            const l = document.createElement('a'); l.download = 'Resultado_MiGolf.jpg'; l.href = c.toDataURL('image/jpeg', 0.9); l.click();
+        html2canvas(document.getElementById('capture-area'), {
+            backgroundColor: '#F4F7F6',
+            scale: 3,
+            onclone: (d) => {
+                const header = d.querySelector('.congrats-header-layout');
+                if(header) { const imgContainer = header.querySelector('div:first-child'); if(imgContainer) { imgContainer.style.width = "40%"; imgContainer.style.height = "auto"; } }
+            }
+        }).then(c => {
+            const l = document.createElement('a'); l.download = 'Resultado_MiGolf.jpg'; l.href = c.toDataURL('image/jpeg', 1.0); l.click();
         });
     }
 </script>
